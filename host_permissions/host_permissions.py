@@ -5,7 +5,7 @@ import sys
 
 HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker3.highwinds.com'
 
-# Log in and grad the Oauth token
+# Log in and grab the Oauth token
 auth = requests.post(
 	HIGHWINDS_URL + "/auth/token",
 	data={
