@@ -25,7 +25,7 @@ OAUTH_TOKEN = auth.json()['access_token']
 
 # Gather relevant information
 account = {
-    "services": [41],  # Enable Global Premium on this account by default
+    "services": [40],  # Enable Global on this account by default
     "accountName": ACCOUNT_NAME,
     "supportEmailAddress": "qa@highwinds.com",
     "billingAccountNumber": "1234",

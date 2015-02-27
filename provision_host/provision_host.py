@@ -24,7 +24,7 @@ OAUTH_TOKEN = auth.json()['access_token']
 
 # Gather relevant information
 host = {
-    "services": [41],  # Enable Global Premium on this host by default
+    "services": [40],  # Enable Global on this host by default
     "name": HOST_NAME
 }
 
