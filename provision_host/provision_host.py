@@ -6,10 +6,10 @@ import json
 
 HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker3.highwinds.com'
 if len(sys.argv) != 4:
-    print "Usage: python provision_host.py [account_hash] [host name] [hostname]"
+    print "Usage: python provision_host.py [account_hash] [host name] [virtualhost]"
 PARENT_ACCOUNT = sys.argv[1]
 HOST_NAME = sys.argv[2] # Friendly name for host in StrikeTracker
-HOSTNAME = sys.argv[3]  # Customer-facing url
+VIRTUALHOST = sys.argv[3]  # Customer-facing url
 
 # Log in and grab the Oauth token
 auth = requests.post(
@@ -49,7 +49,7 @@ if scope_id is None:
 scope_data = {
     'hostname': [
         {
-            'domain': HOSTNAME
+            'domain': VIRTUALHOST
         }
     ]
 }
