@@ -7,6 +7,7 @@ import json
 HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker3.highwinds.com'
 if len(sys.argv) != 4:
     print "Usage: python provision_host.py [account_hash] [host name] [virtualhost]"
+    sys.exit()
 PARENT_ACCOUNT = sys.argv[1]
 HOST_NAME = sys.argv[2] # Friendly name for host in StrikeTracker
 VIRTUALHOST = sys.argv[3]  # Customer-facing url
