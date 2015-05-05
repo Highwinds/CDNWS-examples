@@ -1,4 +1,3 @@
-import getpass
 import requests
 import os
 import sys
@@ -10,6 +9,11 @@ if len(sys.argv) != 2:
     sys.exit()
 ACCOUNT_HASH = sys.argv[1]
 
+# Check for user credentials
+if 'STRIKETRACKER_USER' not in os.environ or 'STRIKETRACKER_PASSWORD' not in os.environ:
+    print "Please set the STRIKETRACKER_USER and STRIKETRACKER_PASSWORD environment variables to your credentials";
+    sys.exit(1)
+
 # Build up purge batch
 urls = []
 for line in sys.stdin:
@@ -19,15 +23,14 @@ for line in sys.stdin:
 if len(urls) == 0:
     print "No urls to purge"
     sys.exit(1)
-sys.stdin = open('/dev/tty')
 
 # Log in and grab the Oauth token
 auth = requests.post(
     HIGHWINDS_URL + "/auth/token",
     data={
     "grant_type": "password",
-    "username": os.environ['STRIKETRACKER_USER'] if 'STRIKETRACKER_USER' in os.environ else raw_input('Username: ').strip(),
-    "password": os.environ['STRIKETRACKER_PASSWORD'] if 'STRIKETRACKER_PASSWORD' in os.environ else getpass.getpass()
+    "username": os.environ['STRIKETRACKER_USER'],
+    "password": os.environ['STRIKETRACKER_PASSWORD']
     }, headers={
     "Accept": "application/json"
     })
