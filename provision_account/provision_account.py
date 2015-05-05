@@ -4,7 +4,7 @@ import os
 import sys
 import json
 
-HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker3.highwinds.com'
+HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker.highwinds.com'
 if len(sys.argv) != 3:
     print "Usage: python provision_account.py [parent_account_hash] [account name]"
 PARENT_ACCOUNT = sys.argv[1]

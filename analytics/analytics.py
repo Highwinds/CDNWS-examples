@@ -7,7 +7,7 @@ import requests
 import sys
 
 HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ \
-    else 'https://striketracker3.highwinds.com'
+    else 'https://striketracker.highwinds.com'
 
 # Set up CSV writer
 writer = csv.writer(sys.stdout, delimiter="\t")
