@@ -4,7 +4,7 @@ import os
 import sys
 import json
 
-HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker.highwinds.com'
+STRIKETRACKER_URL = os.environ['STRIKETRACKER_URL'] if 'STRIKETRACKER_URL' in os.environ else 'https://striketracker.highwinds.com'
 if len(sys.argv) != 3:
     print "Usage: python add_permission.py [account hash] [userId]"
     sys.exit()
@@ -13,21 +13,11 @@ USERID = sys.argv[2] # Integer ID for user that is to be updated
 
 with open('%s_%s.txt' % (PARENT_ACCOUNT, USERID), 'w') as log:
 
-    # Log in and grab the Oauth token
-    auth = requests.post(
-        HIGHWINDS_URL + "/auth/token",
-        data={
-            "grant_type": "password",
-            "username": os.environ['STRIKETRACKER_USER'] if 'STRIKETRACKER_USER' in os.environ else raw_input('Username: ').strip(),
-            "password": os.environ['STRIKETRACKER_PASSWORD'] if 'STRIKETRACKER_PASSWORD' in os.environ else getpass.getpass()
-        }, headers={
-            "Accept": "application/json"
-        })
-    OAUTH_TOKEN = auth.json()['access_token']
+    OAUTH_TOKEN = os.environ['STRIKETRACKER_TOKEN']
 
     # Get user
     get_response = requests.get(
-        HIGHWINDS_URL + "/api/accounts/{accountHash}/users/{userId}".format(
+        STRIKETRACKER_URL + "/api/accounts/{accountHash}/users/{userId}".format(
             accountHash=PARENT_ACCOUNT,
             userId=USERID),
         headers={"Authorization": "Bearer %s" % OAUTH_TOKEN, "Content-Type": "application/json"})
@@ -44,7 +34,7 @@ with open('%s_%s.txt' % (PARENT_ACCOUNT, USERID), 'w') as log:
 
     # Add content edit permission to a user so they can log into FTP
     update_response = requests.put(
-        HIGHWINDS_URL + "/api/accounts/{accountHash}/users/{userId}".format(
+        STRIKETRACKER_URL + "/api/accounts/{accountHash}/users/{userId}".format(
             accountHash=PARENT_ACCOUNT,
             userId=USERID),
         headers={"Authorization": "Bearer %s" % OAUTH_TOKEN, "Content-Type": "application/json"},

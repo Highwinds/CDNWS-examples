@@ -6,31 +6,16 @@ import os
 import requests
 import sys
 
-HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ \
+STRIKETRACKER_URL = os.environ['STRIKETRACKER_URL'] if 'STRIKETRACKER_URL' in os.environ \
     else 'https://striketracker.highwinds.com'
+OAUTH_TOKEN = os.environ['STRIKETRACKER_TOKEN']
 
 # Set up CSV writer
 writer = csv.writer(sys.stdout, delimiter="\t")
 
-# Log in and grad the Oauth token
-auth = requests.post(
-    HIGHWINDS_URL + "/auth/token",
-    data={
-        "grant_type": "password",
-        "username": raw_input('Username: ').strip(),
-        "password": getpass.getpass()
-    }, headers={
-        "Accept": "application/json"
-    })
-try:
-    OAUTH_TOKEN = auth.json()['access_token']
-except ValueError:
-    print "Could not log in"
-    sys.exit(1)
-
 # Grab the currently authenticated user
 me = requests.get(
-    HIGHWINDS_URL + "/api/users/me",
+    STRIKETRACKER_URL + "/api/users/me",
     headers={"Authorization": "Bearer %s" % OAUTH_TOKEN})
 user = me.json()
 
@@ -39,7 +24,7 @@ end_date = datetime.utcnow()
 start_date = end_date - timedelta(hours=24)
 
 analytics = requests.get(
-    HIGHWINDS_URL + "/api/accounts/{accountHash}/analytics/transfer?{qs}".format(
+    STRIKETRACKER_URL + "/api/accounts/{accountHash}/analytics/transfer?{qs}".format(
         accountHash=user['accountHash'],
         qs=urlencode({
             "startDate": start_date.strftime('%Y-%m-%dT%H:00:00Z'),
