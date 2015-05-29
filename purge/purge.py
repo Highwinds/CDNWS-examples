@@ -3,16 +3,17 @@ import os
 import sys
 import json
 
-HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker.highwinds.com'
+STRIKETRACKER_URL = os.environ['STRIKETRACKER_URL'] if 'STRIKETRACKER_URL' in os.environ else 'https://striketracker.highwinds.com'
 if len(sys.argv) != 2:
-    print "Usage: python provision_host.py [account_hash] < urls"
+    print "Usage: python purge.py [account_hash] < urls"
     sys.exit()
 ACCOUNT_HASH = sys.argv[1]
 
-# Check for user credentials
-if 'STRIKETRACKER_USER' not in os.environ or 'STRIKETRACKER_PASSWORD' not in os.environ:
-    print "Please set the STRIKETRACKER_USER and STRIKETRACKER_PASSWORD environment variables to your credentials";
+# Grab the Oauth token
+if 'STRIKETRACKER_TOKEN' not in os.environ:
+    print "Please set the STRIKETRACKER_TOKEN environment variable to your token";
     sys.exit(1)
+OAUTH_TOKEN = os.environ['STRIKETRACKER_TOKEN']
 
 # Build up purge batch
 urls = []
@@ -24,21 +25,9 @@ if len(urls) == 0:
     print "No urls to purge"
     sys.exit(1)
 
-# Log in and grab the Oauth token
-auth = requests.post(
-    HIGHWINDS_URL + "/auth/token",
-    data={
-    "grant_type": "password",
-    "username": os.environ['STRIKETRACKER_USER'],
-    "password": os.environ['STRIKETRACKER_PASSWORD']
-    }, headers={
-    "Accept": "application/json"
-    })
-OAUTH_TOKEN = auth.json()['access_token']
-
 # Purge urls
 purge_response = requests.post(
-    HIGHWINDS_URL + "/api/accounts/{accountHash}/purge".format(accountHash=ACCOUNT_HASH),
+    STRIKETRACKER_URL + "/api/accounts/{accountHash}/purge".format(accountHash=ACCOUNT_HASH),
     headers={"Authorization": "Bearer %s" % OAUTH_TOKEN, "Content-Type": "application/json"},
     data=json.dumps({"list":urls}))
 jobId = purge_response.json()['id']
@@ -48,7 +37,7 @@ print "Purge job %s submitted" % jobId
 progress = 0
 while progress < 1:
     status_response = requests.get(
-        HIGHWINDS_URL + "/api/accounts/{accountHash}/purge/{jobId}".format(
+        STRIKETRACKER_URL + "/api/accounts/{accountHash}/purge/{jobId}".format(
             accountHash=ACCOUNT_HASH,
             jobId=jobId),
         headers={"Authorization": "Bearer %s" % OAUTH_TOKEN})

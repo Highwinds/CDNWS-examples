@@ -3,19 +3,20 @@
 require "../vendor/autoload.php";
 use GuzzleHttp\Client;
 
-$HIGHWINDS_URL = getenv('HIGHWINDS_URL') ? getenv('HIGHWINDS_URL') : 'https://striketracker.highwinds.com';
+$STRIKETRACKER_URL = getenv('STRIKETRACKER_URL') ? getenv('STRIKETRACKER_URL') : 'https://striketracker.highwinds.com';
 if (count($argv) != 2) {
-    echo "Usage: php provision_host.php [account_hash] < urls\n";
+    echo "Usage: php purge.php [account_hash] < urls\n";
     exit(1);
 }
 $ACCOUNT_HASH = $argv[1];
 $client = new Client();
 
-# Check for user credentials
-if (! getenv('STRIKETRACKER_USER') || ! getenv('STRIKETRACKER_PASSWORD')) {
-    echo "Please set the STRIKETRACKER_USER and STRIKETRACKER_PASSWORD environment variables to your credentials\n";
+# Grab the Oauth token
+if (! getenv('STRIKETRACKER_TOKEN')) {
+    echo "Please set the STRIKETRACKER_TOKEN environment variable to your token\n";
     exit(1);
 }
+$OAUTH_TOKEN = getenv('STRIKETRACKER_TOKEN');
 
 # Build up purge batch
 $urls = [];
@@ -29,24 +30,9 @@ if (count($urls) == 0) {
     exit(1);
 }
 
-# Log in and grab the Oauth token
-$auth = $client->post(
-    $HIGHWINDS_URL . "/auth/token",
-    [
-        'body' => [
-            "grant_type" => "password",
-            "username" => getenv('STRIKETRACKER_USER'),
-            "password" => getenv('STRIKETRACKER_PASSWORD')
-        ],
-        'headers' => [
-            "Accept" => "application/json"
-        ]
-    ]);
-$OAUTH_TOKEN = $auth->json()['access_token'];
-
 # Purge urls
 $purge_response = $client->post(
-    $HIGHWINDS_URL . "/api/accounts/$ACCOUNT_HASH/purge",
+    $STRIKETRACKER_URL . "/api/accounts/$ACCOUNT_HASH/purge",
     [
         'headers' => ["Authorization" => "Bearer $OAUTH_TOKEN", "Content-Type" => "application/json"],
         'json' => ["list" => $urls]
@@ -58,7 +44,7 @@ echo "Purge job $jobId submitted\n";
 $progress = 0.0;
 while ($progress < 1) {
     $status_response = $client->get(
-        $HIGHWINDS_URL . "/api/accounts/$ACCOUNT_HASH/purge/$jobId", [
+        $STRIKETRACKER_URL . "/api/accounts/$ACCOUNT_HASH/purge/$jobId", [
             'headers' => ["Authorization" => "Bearer $OAUTH_TOKEN"]
         ]);
     $progress = $status_response->json()['progress'];

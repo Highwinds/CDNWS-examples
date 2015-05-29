@@ -4,25 +4,14 @@ import os
 import sys
 import json
 
-HIGHWINDS_URL = os.environ['HIGHWINDS_URL'] if 'HIGHWINDS_URL' in os.environ else 'https://striketracker.highwinds.com'
+STRIKETRACKER_URL = os.environ['STRIKETRACKER_URL'] if 'STRIKETRACKER_URL' in os.environ else 'https://striketracker.highwinds.com'
 if len(sys.argv) != 4:
     print "Usage: python provision_host.py [account_hash] [host name] [virtualhost]"
     sys.exit()
 PARENT_ACCOUNT = sys.argv[1]
 HOST_NAME = sys.argv[2] # Friendly name for host in StrikeTracker
 VIRTUALHOST = sys.argv[3]  # Customer-facing url
-
-# Log in and grab the Oauth token
-auth = requests.post(
-    HIGHWINDS_URL + "/auth/token",
-    data={
-    "grant_type": "password",
-    "username": os.environ['STRIKETRACKER_USER'] if 'STRIKETRACKER_USER' in os.environ else raw_input('Username: ').strip(),
-    "password": os.environ['STRIKETRACKER_PASSWORD'] if 'STRIKETRACKER_PASSWORD' in os.environ else getpass.getpass()
-    }, headers={
-    "Accept": "application/json"
-    })
-OAUTH_TOKEN = auth.json()['access_token']
+OAUTH_TOKEN = os.environ['STRIKETRACKER_TOKEN']
 
 # Gather relevant information
 host_data = {
@@ -32,7 +21,7 @@ host_data = {
 
 # Create the new host
 host_response = requests.post(
-    HIGHWINDS_URL + "/api/accounts/{accountHash}/hosts".format(accountHash=PARENT_ACCOUNT),
+    STRIKETRACKER_URL + "/api/accounts/{accountHash}/hosts".format(accountHash=PARENT_ACCOUNT),
     headers={"Authorization": "Bearer %s" % OAUTH_TOKEN, "Content-Type": "application/json"},
     data=json.dumps(host_data))
 host = host_response.json()
@@ -55,7 +44,7 @@ scope_data = {
     ]
 }
 scope_response = requests.put(
-    HIGHWINDS_URL + "/api/accounts/{accountHash}/hosts/{hostHash}/configuration/{scopeId}".format(
+    STRIKETRACKER_URL + "/api/accounts/{accountHash}/hosts/{hostHash}/configuration/{scopeId}".format(
         accountHash=PARENT_ACCOUNT,
         hostHash=host['hashCode'],
         scopeId=scope_id),
