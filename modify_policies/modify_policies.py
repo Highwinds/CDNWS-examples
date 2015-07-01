@@ -35,7 +35,7 @@ host = host_response.json()
 json.dump(host, sys.stdout, indent=4, separators=(',', ': '))
 print ""
 
-# Delete dynamicContent policy
+# Delete compression policy
 host_response = requests.put(
     STRIKETRACKER_URL + "/api/accounts/{accountHash}/hosts/{host}/configuration/{scope}".format(
         accountHash=PARENT_ACCOUNT,
