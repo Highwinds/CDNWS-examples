@@ -9,7 +9,7 @@ if len(sys.argv) != 4:
     print "Usage: python modify_policies.py [account_hash] [host_hash] [scope_id]"
     sys.exit()
 PARENT_ACCOUNT = sys.argv[1]
-HOST = sys.argv[2] # Friendly name for host in StrikeTracker
+HOST = sys.argv[2] # Host hash
 SCOPE_ID = sys.argv[3] # Scope id which you want to edit
 OAUTH_TOKEN = os.environ['STRIKETRACKER_TOKEN']
 
