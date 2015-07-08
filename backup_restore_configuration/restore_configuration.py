@@ -5,7 +5,7 @@ import sys
 
 # Print usage if command line parameters not correctly provided
 if len(sys.argv) != 5:
-    print "Usage: python restore_configuration.py [account_hash] [host_hash] [scope_id] [infile]"
+    print "Usage: python %s [account_hash] [host_hash] [scope_id] [infile]" % sys.argv[0]
     sys.exit(1)
 
 STRIKETRACKER_URL = os.environ['STRIKETRACKER_URL'] if 'STRIKETRACKER_URL' in os.environ else \

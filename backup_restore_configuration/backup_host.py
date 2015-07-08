@@ -6,7 +6,7 @@ import sys
 
 # Print usage if command line parameters not correctly provided
 if len(sys.argv) > 4 or len(sys.argv) < 3:
-    print "Usage: python backup_host.py [account_hash] [host_hash] {target_directory}"
+    print "Usage: python %s [account_hash] [host_hash] {target_directory}" % sys.argv[0]
     sys.exit(1)
 
 STRIKETRACKER_URL = os.environ['STRIKETRACKER_URL'] if 'STRIKETRACKER_URL' in os.environ else \
